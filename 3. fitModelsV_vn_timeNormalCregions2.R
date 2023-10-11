@@ -96,20 +96,20 @@ input.data$sigma.y <- NA
 
 ## JAGS parameters (can be changed if not converging - set to be relatively fast)
 #a. - this is what is already run
-nchains = 4
-nburnin = 1750
-niter = 2000
-nthin = 1
+# nchains = 4
+# nburnin = 1750
+# niter = 2000
+# nthin = 1
 #b. - try with this first
 # nchains = 4
 # nburnin = 100000
 # niter = 120000
 # nthin = 10
 #c. - This is the final one we ran last time
-# nchains = 4
-# nburnin = 500000
-# niter = 1750000
-# nthin = 500
+nchains = 4
+nburnin = 500000
+niter = 1750000
+nthin = 500
 #d.
 # nchains = 4
 # nburnin = 500000
@@ -128,15 +128,11 @@ splines.data <- getSplinesData(11, order = 1, degree=3, I=155)
 #splines.data <- getSplinesData(26, order = 1, degree=3, I=10)
 
 
-#Random time slopes
-#source("functions/getSplines.R")
-#splines.data <- getSplinesData(nyears.c, niso, order = 1)
-
 input.data.splines <- c(input.data, splines.data)
 rm("input.data", "input.data2"
    #, "stanData"
 )
-#saveRDS(input.data.splines, "VN types/output/inputDataSplines.rds")
+
 load.module("glm")
 file<-"models/vnModelPostCC_TEST.txt"
 fileName<-substr(file, 8, as.numeric(gregexpr(".txt", file))-1)
@@ -162,7 +158,5 @@ R2jags::traceplot(mod, varname=c("beta.d", "mu.beta",
                                  "tau.beta", "tau.delta",
                                  "alpha", "Z.tk", "delta.hc"), mfrow=c(3,3),
                   ask=FALSE)
-
-#autocorr.plot(mod$BUGSoutput$sims.matrix[,84:88], lag=100, ask=TRUE)
 
 dev.off()

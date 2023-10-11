@@ -5,101 +5,9 @@ library(ggbreak)
 library(boot)
 library(gridExtra)
 
-#mod<-readRDS("VN types/output/models/vn_timeNormalC_21.2e+08.rds")
-#mod<-readRDS("VN types/output/models/newVNModelE2_4types2_2020_v35e+06.rds")
-#mod<-vn_timeNormalC
 vnFinal<-readRDS("output/vnDataFinal.RDS") 
-# 
-# countries<-vnFinal %>% filter(!is.na(level) & Year>=2010) %>%  dplyr::select(ISO) %>% distinct() %>% 
-#   arrange(ISO) %>% mutate(country1=row_number())
-# preterms<-merge(x=vnFinal, y=countries, by="ISO", all.x=TRUE) %>% 
-#   filter(!is.na(country1) & Year==2020) %>% dplyr::select(ISO, pretermRate) 
-# 
-# dim<-dim(mod$BUGSoutput$median$p[,,])
-# #mod$BUGSoutput$sims.list$p<-mod$BUGSoutput$sims.list$q
-# 
-# for (i in 1:dim[1]){
-#   for (j in 1:dim[2]){
-#     output1<-as.data.frame(list(country=i, year=j+2009, 
-#                                 PT_SGA_Est_lower=quantile(mod$BUGSoutput$sims.list$q[,i,j,1], 0.025),
-#                                 PT_SGA_Est=mod$BUGSoutput$median$q[i,j,1],
-#                                 PT_SGA_Est_upper=quantile(mod$BUGSoutput$sims.list$q[,i,j,1], 0.975),
-#                                 
-#                                 PT_NSGA_Est_lower=quantile(mod$BUGSoutput$sims.list$q[,i,j,2], 0.025),
-#                                 PT_NSGA_Est=mod$BUGSoutput$median$q[i,j,2], 
-#                                 PT_NSGA_Est_upper=quantile(mod$BUGSoutput$sims.list$q[,i,j,2], 0.975),
-#                                 
-#                                 T_SGA_Est_lower=quantile(mod$BUGSoutput$sims.list$q[,i,j,3], 0.025),
-#                                 T_SGA_Est=mod$BUGSoutput$median$q[i,j,3],
-#                                 T_SGA_Est_upper=quantile(mod$BUGSoutput$sims.list$q[,i,j,3], 0.975),
-#                                 
-#                                 T_NSGA_Est_lower=quantile(mod$BUGSoutput$sims.list$q[,i,j,4], 0.025),
-#                                 T_NSGA_Est=mod$BUGSoutput$median$q[i,j,4], 
-#                                 T_NSGA_Est_upper=quantile(mod$BUGSoutput$sims.list$q[,i,j,4], 0.975)))
-#     if (i==1 & j==1){
-#       output<-output1
-#     } else{
-#       output<-rbind(output, output1)
-#     }
-#   }
-# }
-# 
-# vnModel1<-merge(x=output, y=countries %>% rename(country=country1), by="country", all.x=TRUE) %>%
-#   rename(Year=year) %>% dplyr::select(-country) %>% mutate(predicted=0)
-# 
-
-#-----------------------------------
-#Adding predictions
-# source("4.predictionV2E2_4types2regions2.R")
-# regions<-readRDS("output/regionCodes.RDS") %>% 
-#   mutate(countryIndex=row_number())
-# 
-# predict2<-predict%>% dplyr::select(-sum) %>% rename(Year=year) %>% mutate(predicted=1)
-# 
-# allTogether<-rbind(vnModel1, predict2)
-# 
-# allTogether2<-merge(x=allTogether, y=regions, by="ISO", all.x=TRUE) %>% 
-#   mutate(isoYear=paste0(ISO, Year))
-# 
-# 
-# #write.csv(allTogether2, "VN types/output/vn_timeNormalC_2regions2 predictions.csv")
-# write.csv(allTogether2, 
-#           paste0("output/",
-#           fileName,((niter-nburnin)/nthin)*nchains, " Estimates.csv"))
 
 allTogether2<-estimates %>% mutate(isoYear=paste0(ISO, year))
-
-#--------
-# allTogether2<-read.csv("VN types/output/vn_timeNormalC_2regions2 predictions.csv")
-# second<-read.csv("VN types/output/vn_timeNormalC_2test predictionsF.csv") %>% 
-#   dplyr::select(-c(predicted, regionName, regionIndex, OfficialName, countryIndex, isoYear))
-# 
-# names(second)[4:15]<-paste0(names(second)[4:15], "_Updated")
-# 
-# all<-merge(x=allTogether2, y=second, by=c("ISO", "Year"), all.x=TRUE)
-
-#------------------------------------
-# Adding the inputs in 
-
-# vnFinalMeta<-readRDS("VN types/output/vnDataFinal_meta2.rds")
-# vnDataFinal<-vnFinalMeta %>% filter(Year>=2010 & !is.na(level)) %>% 
-#   mutate(sourceIndex=ifelse(level=="National", 1, 
-#                             ifelse(level=="Study", 2, NA))) %>%
-#   dplyr::select(-c(PT_SGA_P, PT_NSGA_P1, T_SGA_P, T_NSGA_P)) %>% 
-#   mutate(PT_SGA2=ifelse(level=="Study", PT_SGA_meta ,PT_SGA),
-#          T_SGA2=ifelse(level=="Study", T_SGA_meta ,T_SGA),
-#          PT_NSGA2=ifelse(level=="Study", PT_NSGA_meta ,PT_NSGA),
-#          T_NSGA2=ifelse(level=="Study", T_NSGA_meta ,T_NSGA),
-#          Preterm2=ifelse(level=="Study", Preterm_meta ,Preterm),
-#          Term2=ifelse(level=="Study", Term_meta ,Term),
-#          allN=ifelse(level=="Study", wpp_lb ,allN)) %>% 
-#   mutate(PT_SGA_P=PT_SGA2/allN, 
-#          PT_NSGA_P=PT_NSGA2/allN,
-#          T_SGA_P=T_SGA2/allN, 
-#          T_NSGA_P=T_NSGA2/allN,
-#          isoYear=paste0(ISO, Year))%>% 
-#   dplyr::select(ISO, Year, OfficialName=OfficialName.x, isoYear, regionName, level, 
-#                 "PT_NSGA_P", "PT_SGA_P" ,   "T_NSGA_P"  , "T_SGA_P")
 
 vnFinalMeta<-readRDS("output/vnDataFinal_meta2.rds")
 d<-vnFinalMeta %>% filter(Year>=2010 & !is.na(level)) %>%
@@ -142,8 +50,6 @@ allData<-merge(x=vnDataFinal2, y=allTogether2 %>% rename(Year=year) ,
   #        regionName=ifelse(is.na(regionName.x), regionName.y, regionName.x), 
           isoYear=ifelse(is.na(isoYear.x), isoYear.y, isoYear.x)) %>% 
   dplyr::select(-c(isoYear.x, isoYear.y)) %>% rename(year=Year)
-
-#allData2<-merge(x=allData, y=regions %>% dplyr::select(ISO, countryIndex), by=c("ISO"), all.x=TRUE)
 
 regions<-readRDS("output/regionCodes.RDS") %>%
   mutate(countryIndex=row_number())
@@ -228,12 +134,8 @@ plotCountriesNewV<-function(i){
   
   scale<-c(0,100)
   plot1<-plot1+coord_cartesian(ylim = scale, expand=FALSE)
-  # plot2<-plot1+
-  #   scale_y_break(c(round((order$count[which$row]*100-5)/5)*5,
-  #                   round((order$count[which$row-1]*100-5)/5)*5), scales=0.5)
-  
-  #plot2
-  return(plot1)
+
+    return(plot1)
 }
 
 pdf_name<-paste0("output/", fileName,((niter-nburnin)/nthin)*nchains, "_countryPlots.pdf")
@@ -322,8 +224,7 @@ plotCountriesNewV2<-function(i){
   plot3<-grid.arrange(plot2, plot1, ncol=1)
   
   scale<-c(0,100)
-  # plot1<-plot1+coord_cartesian(ylim = scale, expand=FALSE)
-  
+
   return(plot3)
 }
 

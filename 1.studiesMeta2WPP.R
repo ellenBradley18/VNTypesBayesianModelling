@@ -103,15 +103,6 @@ metaEstsalt<-as.data.frame(list(T_SGA_P1L_meta=inv.logit(metaPlot$TE.random.w-1.
   mutate(level="Study")
 metaEsts$subRegion=rownames(metaEsts)
 
-# subRegions2=read.csv(paste0("input/","sbr_regions v2.csv"))%>% 
-#   mutate(M49Region2=ifelse(ISO3Code=="LKA", "Western Asia", M49Region2)) %>% 
-#   dplyr::select(subRegion=M49Region2, regionName=SDGRegionrev1) %>% 
-#   distinct()
-# 
-# help<-subRegions %>% dplyr::select(subRegion, regionName) %>% distinct()
-# 
-# help<-merge(x=metaEsts, y=subRegions, 
-#             by="subRegion", all.x=TRUE)
 wpp2<-readRDS("output/wpp2.rds") %>% dplyr::select(ISO, Year=year, wpp_lb)
 
 studies2<-merge(x=merge(x=vnFinal2, y=wpp2,
@@ -145,9 +136,3 @@ help<-vnFinal3 %>% filter(!is.na(level) & Year>=2010) %>% dplyr::select(ISO) %>%
 
 saveRDS(vnFinal3, "output/vnDataFinal_meta2.RDS")
 
-
-
-# v<-merge(x=vnFinal2, y=metaEsts, by=c("subRegion", "level"), all.x=TRUE) %>% 
-#   mutate(differenceT=T_SGA_P1_meta-T_SGA_P1, 
-#          T_SGA_meta=round(T_SGA_P1_meta*Preterm, 0),
-#          row=row_number()) %>% arrange(ISO, Year)

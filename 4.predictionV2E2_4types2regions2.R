@@ -25,21 +25,8 @@ for (m in 1:2){
   beta2.c<-cbind(undo(mod[["BUGSoutput"]][["sims.list"]][["mu.beta"]][,2,m]) %>% rename(mubeta1=name),
                  undo(mod[["BUGSoutput"]][["sims.list"]][["tau.beta"]][,2,m]) %>% rename(taubeta1=name))%>% 
     rowwise() %>% mutate(beta2=rnorm(1,mubeta1, 1/sqrt(taubeta1))) %>% dplyr::select(beta2)
-  # beta3.c<-cbind(undo(mod[["BUGSoutput"]][["sims.list"]][["mu.beta"]][,3,m]) %>% rename(mubeta1=name),
-  #                undo(mod[["BUGSoutput"]][["sims.list"]][["tau.beta"]][,3,m]) %>% rename(taubeta1=name))%>% 
-  #   rowwise() %>% mutate(beta3=rnorm(1,mubeta1, 1/sqrt(taubeta1))) %>% dplyr::select(beta3)
-  # beta4.c<-cbind(undo(mod[["BUGSoutput"]][["sims.list"]][["mu.beta"]][,4,m]) %>% rename(mubeta1=name),
-  #                undo(mod[["BUGSoutput"]][["sims.list"]][["tau.beta"]][,4,m]) %>% rename(taubeta1=name))%>% 
-  #   rowwise() %>% mutate(beta4=rnorm(1,mubeta1, 1/sqrt(taubeta1))) %>% dplyr::select(beta4)
-  # beta5.c<-cbind(undo(mod[["BUGSoutput"]][["sims.list"]][["mu.beta"]][,5,m]) %>% rename(mubeta1=name),
-  #                undo(mod[["BUGSoutput"]][["sims.list"]][["tau.beta"]][,5,m]) %>% rename(taubeta1=name))%>% 
-  #   rowwise() %>% mutate(beta5=rnorm(1,mubeta1, 1/sqrt(taubeta1))) %>% dplyr::select(beta5)
-  # beta6.c<-cbind(undo(mod[["BUGSoutput"]][["sims.list"]][["mu.beta"]][,6,m]) %>% rename(mubeta1=name),
-  #                undo(mod[["BUGSoutput"]][["sims.list"]][["tau.beta"]][,6,m]) %>% rename(taubeta1=name))%>% 
-  #   rowwise() %>% mutate(beta6=rnorm(1,mubeta1, 1/sqrt(taubeta1))) %>% dplyr::select(beta6)
-  
+
   beta.c<-cbind(beta1.c,beta2.c
-                #,beta3.c,beta4.c,beta5.c,beta6.c
                 )
   names(beta.c)<-paste0(names(beta.c), m)
   
@@ -136,7 +123,6 @@ toPred<-anti_join(regionCodes, vnDataFinal %>%
                     filter(!is.na(level)&Year>=2010), by=c("ISO")) %>% dplyr::select(ISO)
 toPred2<-merge(x=toPred, y=regionCodes, by=c("ISO"), all.x=TRUE) %>% 
   mutate(regionIndex=ifelse(regionIndex==1, 1,2))
-#toPred<-regionCodes %>% dplyr::select(ISO)
 toPred3<-merge(x=vnDataFinal, y=toPred2, all.y=TRUE, by=c("ISO")) %>% 
   mutate(pretermSe=(pretermRate-pretermLower)/1.96) %>% 
   dplyr::select(OfficialName=OfficialName.y, ISO, year=Year, regionName=regionName.y, regionIndex=regionIndex.y,
@@ -172,18 +158,8 @@ for (i in 1:nIsos){
     
     #Covariates: Alpha1 - Preterm, alpha2 - NMR
     cPred5<-cPred4
-    # cPred5$alpha1<-cPred4[,which(names(cPred4)== paste0("alpha1",m))]
-    # cPred5$alpha2NMR1<-cPred4[,which(names(cPred4)== paste0("alpha2",m, "NMR", 1))]
-    # cPred5$alpha2NMR2<-cPred4[,which(names(cPred4)== paste0("alpha2",m, "NMR", 2))]
-    # cPred5$alpha2NMR3<-cPred4[,which(names(cPred4)== paste0("alpha2",m, "NMR", 3))]
-    # cPred5$alpha2NMR4<-cPred4[,which(names(cPred4)== paste0("alpha2",m, "NMR", 4))]
     cPred6<-cPred5
-    # cPred6<-cPred5 %>% mutate(nmr=ifelse(NMRgroup==1, alpha2NMR1, 
-    #                                      ifelse(NMRgroup==2, alpha2NMR2,
-    #                                             ifelse(NMRgroup==3, alpha2NMR3,
-    #                                                    ifelse(NMRgroup==4, alpha2NMR4, NA)))),
-    #                           preterm=pretermRate*alpha1)
-    
+
     cPredList<-list()
     for (j in 1:11){
       cPredTime<-cPred6 %>% filter(year==yearIndex$year[j])

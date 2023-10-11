@@ -39,7 +39,6 @@ vnDataClean<-vnData  %>%
 
 without<-vnDataClean%>% filter(iso2!="GBR")
 gbr<-vnDataClean %>% filter(iso2=="GBR")
-#gbr<-vnDataClean %>% filter(Countries_Territories %in% c("SCOT", "UK", "N_Ireland"))
 
 gbr2<-gbr %>% dplyr::select(-c("Countries_Territories"
 )) %>%

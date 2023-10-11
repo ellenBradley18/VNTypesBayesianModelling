@@ -17,14 +17,10 @@ wpp<-wpp_2021 %>% filter(LocTypeName=="Country/Area" & Year>1994 & Year<=2020) %
 wpp2<-merge(x=wpp, y=regionCodes, by="OfficialName", all.y=TRUE) %>% dplyr::select(ISO, Year, wpp_lb) %>%
   filter(Year>=2000)
 
-# vnDataFinal<-merge(x=addingPreterm, y=wpp2, by=c("Year", "ISO"), all.x=TRUE) %>%
-#   mutate(allN=ifelse(is.na(allN), wpp_lb, allN))
+
 vnDataAll<-merge(x=addingPreterm, y=wpp2, by=c("Year", "ISO"), all.x=TRUE) %>%
   mutate(LGA_PT_LBW=ifelse(is.na(LGA_PT_LBW), 0, LGA_PT_LBW), 
          LGA_T_LBW=ifelse(is.na(LGA_T_LBW), 0, LGA_T_LBW)) %>% 
-  # rename(AGA_PT_LBW=AGA_LBW_P, AGA_T_LBW=AGA_LBW_T, AGA_PT_NBW=AGA_NBW_P, AGA_T_NBW=AGA_NBW_T,
-  #        LGA_PT_LBW=LGA_LBW_P, LGA_PT_NBW=LGA_NBW_P, LGA_T_NBW=LGA_NBW_T,
-  #        SGA_PT_LBW=SGA_LBW_P, SGA_T_LBW=SGA_LBW_T, SGA_T_NBW=SGA_NBW_T) %>% 
   mutate(SGA_PT_NBW=0, SGA_PT_NBW=0) %>% 
   
   mutate(PT_NSGA=LGA_PT_LBW+LGA_PT_NBW+AGA_PT_LBW+AGA_PT_NBW,
@@ -34,13 +30,6 @@ vnDataAll<-merge(x=addingPreterm, y=wpp2, by=c("Year", "ISO"), all.x=TRUE) %>%
          Preterm=LGA_PT_LBW+LGA_PT_NBW+AGA_PT_LBW+AGA_PT_NBW+SGA_PT_LBW+SGA_PT_NBW,
          Term=LGA_T_NBW+LGA_T_LBW+AGA_T_LBW+AGA_T_NBW+SGA_T_LBW+SGA_T_NBW,
          allN=PT_NSGA+PT_SGA+T_SGA+T_NSGA) %>% 
-  # mutate(T_SGA=ifelse(!is.na(level), SGA_T, NA),
-  #        PT_SGA=ifelse(!is.na(level), SGA_P, NA),
-  #        T_NSGA=ifelse(!is.na(level), T_SGA+AGA_T, NA),
-  #        PT_NSGA=ifelse(!is.na(level),PT_SGA+AGA_P, NA), 
-  #        allN=ifelse(!is.na(level),T_SGA+AGA_T+LGA_T+PT_SGA+AGA_P+LGA_P, NA),
-  #        Term=ifelse(!is.na(level),T_SGA+AGA_T+LGA_T, NA),
-  #        Preterm=ifelse(!is.na(level),PT_SGA+AGA_P+LGA_P, NA)) %>% 
   mutate(PT_SGA_P=PT_SGA/allN,
          PT_NSGA_P=PT_NSGA/allN,
          T_SGA_P=T_SGA/allN,
@@ -50,7 +39,4 @@ vnDataAll<-merge(x=addingPreterm, y=wpp2, by=c("Year", "ISO"), all.x=TRUE) %>%
          PT_NSGA_P1=PT_NSGA/Preterm,
          T_SGA_P1=T_SGA/Term,
          T_NSGA_P1=T_NSGA/Term)
-
-#saveRDS(vnDataFinal, "VN types/output/vnDataFinal.rds")
-#--------------
 
