@@ -1,0 +1,14 @@
+Thank you for downloading the data and code associated with the 
+"Small babies, big risks: global estimates of prevalence and mortality for vulnerable newborns to accelerate change and improve counting." paper 
+(https://doi.org/10.1016/S0140-6736(23)00522-6). 
+
+All of the code is run in R. 
+To run the estimates, open the "0.masterV.R" file and follow the steps outlined.
+
+Note: to use the "rjags" and "R2jags" packages, you need to install JAGS.
+You will need to install JAGS on your machine. This is a separate program outside of R which is what the RJags package runs through. 
+Go to http://www.sourceforge.net/projects/mcmc-jags/files and click the green button Download latest version.
+
+Any problems, please email Ellen Bradley (ellen_bradley@outlook.com).
+My github is ellenBradley18 and twitter EllenLBradley.
+
